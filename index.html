@@ -1,0 +1,114 @@
+
+<head>
+<link rel="icon" href="https://scfcdv.github.io/homeweb2/favicon.ico">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    font-size: 600%;}
+</style>
+<title>今</title>
+</head>
+<body>
+<div id="datetime"></div>
+<div id="dayOfWeek"></div>
+<div id="timer"></div>
+<div id="countdown"></div>
+<div id="timeSinceStart">0</div>
+<script>
+  function updateDateTime() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    const milliseconds = String(now.getMilliseconds()).padStart(3, '0');
+    const daysOfWeek = ["日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"];
+    const dayOfWeek = daysOfWeek[now.getDay()];
+    const datetimeDisplay = `${year}/${month}/${day} ${hours}:${minutes}:${seconds}.${milliseconds} ${dayOfWeek}`;
+    const dayOfWeekDisplay = ``;
+    document.getElementById('datetime').textContent = datetimeDisplay;
+    document.getElementById('dayOfWeek').textContent = dayOfWeekDisplay;}
+  setInterval(updateDateTime, 10);
+  updateDateTime();
+</script>
+<script>
+  function updateTimer() {
+    const startTime = new Date(0); // 紀元からの基準時間
+    const currentTime = new Date();
+    const elapsedTime = currentTime - startTime; // 経過時間（ミリ秒）
+
+    const totalSeconds = Math.floor(elapsedTime / 1000); // 経過秒数
+    const milliseconds = elapsedTime % 1000; // 残りのミリ秒
+
+    const formattedTime = `紀元からの秒数:${totalSeconds}.${milliseconds}秒`; // 経過秒数とミリ秒を結合
+
+    const timerElement = document.getElementById('timer');
+    timerElement.textContent = formattedTime;
+
+    setTimeout(updateTimer, 1); // 1ミリ秒後に再度更新
+  }
+
+  updateTimer(); // タイマーを開始
+</script>
+<script>
+  // 今日の終わりの時刻を計算する関数
+  function calculateEndOfDay() {
+    const now = new Date();
+    const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0, 0);
+    return endOfDay.getTime() / 1000;
+  }
+
+  // カウントダウンを更新する関数
+  function updateCountdown() {
+    const countdownElement = document.getElementById('countdown');
+    const endOfDayTimestamp = calculateEndOfDay();
+    
+    function update() {
+      const currentTime = new Date().getTime() / 1000;
+      const remainingSeconds = endOfDayTimestamp - currentTime;
+      countdownElement.innerText = "一日が終わるまで:" + remainingSeconds.toFixed(3) + " 秒";
+      if (remainingSeconds > 0) {
+        setTimeout(update, 1); // 1ミリ秒ごとに更新
+      }
+    }
+
+    update();
+  }
+
+  updateCountdown(); // カウントダウンを開始
+</script>
+<script>
+  // 今日の始まりの時刻を計算する関数
+  function calculateStartOfDay() {
+    const now = new Date();
+    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+    return startOfDay.getTime() / 1000;
+  }
+
+  // 経過時間を更新する関数
+  function updateTimeSinceStart() {
+    const timeSinceStartElement = document.getElementById('timeSinceStart');
+    const startOfDayTimestamp = calculateStartOfDay();
+    
+    function update() {
+      const currentTime = new Date().getTime() / 1000;
+      const elapsedSeconds = currentTime - startOfDayTimestamp;
+      timeSinceStartElement.innerText = "一日が始まってから:" + elapsedSeconds.toFixed(3) + " 秒";
+      setTimeout(update, 1); // 1ミリ秒ごとに更新
+    }
+
+    update();
+  }
+
+  updateTimeSinceStart(); // 経過時間の表示を開始
+</script>
+</body>
